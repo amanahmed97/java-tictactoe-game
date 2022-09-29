@@ -247,25 +247,50 @@ class RunOrderNChaos{
             countOColumn = 0;
             countODiagonal1 = 0;
             countODiagonal2 = 0;
-            for(int j=0;j<board.rows;j++){
-                // For X
-                if(board.getBoardSymbol(i*board.rows+j) == TTTSymbol.symbolX)
+            for(int j=0;j<board.rows;j++) {
+                // For X check
+                // For X Row
+                if (board.getBoardSymbol(i * board.rows + j) == TTTSymbol.symbolX) {
                     countXRow++;
-                if(board.getBoardSymbol(j*board.rows+i) == TTTSymbol.symbolX)
+                    if (countORow > 0) countORow--;
+                }
+                // For X Column
+                if (board.getBoardSymbol(j * board.rows + i) == TTTSymbol.symbolX) {
                     countXColumn++;
-                if(board.getBoardSymbol(j*board.rows+j) == TTTSymbol.symbolX)
+                    if (countOColumn > 0) countOColumn--;
+                }
+                // For X Diagonal 1
+                if (board.getBoardSymbol(j * board.rows + j) == TTTSymbol.symbolX) {
                     countXDiagonal1++;
-                if(board.getBoardSymbol((j*board.rows+(board.rows-1-j))) == TTTSymbol.symbolX)
+                    if (countODiagonal1 > 0) countODiagonal1--;
+                }
+                // For X Diagonal 2
+                if (board.getBoardSymbol((j * board.rows + (board.rows - 1 - j))) == TTTSymbol.symbolX){
                     countXDiagonal2++;
+                    if (countODiagonal2 > 0) countODiagonal2--;
+                }
+
                 // For O
-                if(board.getBoardSymbol(i*board.rows+j) == TTTSymbol.symbolO)
+                // For O Row
+                if(board.getBoardSymbol(i*board.rows+j) == TTTSymbol.symbolO){
                     countORow++;
-                if(board.getBoardSymbol(j*board.rows+i) == TTTSymbol.symbolO)
+                    if (countXRow>0) countXRow--;
+                }
+                // For O Column
+                if(board.getBoardSymbol(j*board.rows+i) == TTTSymbol.symbolO) {
                     countOColumn++;
-                if(board.getBoardSymbol(j*board.rows+j) == TTTSymbol.symbolO)
+                    if (countXColumn>0) countXColumn--;
+                }
+                // For O Diagonal 1
+                if(board.getBoardSymbol(j*board.rows+j) == TTTSymbol.symbolO) {
                     countODiagonal1++;
-                if(board.getBoardSymbol((j*board.rows+(board.rows-1-j))) == TTTSymbol.symbolO)
+                    if (countXDiagonal1>0) countXDiagonal1--;
+                }
+                // For O Diagonal 2
+                if(board.getBoardSymbol((j*board.rows+(board.rows-1-j))) == TTTSymbol.symbolO) {
                     countODiagonal2++;
+                    if (countXDiagonal2>0) countXDiagonal2--;
+                }
             }
             if(countXRow>=5 || countXColumn>=5 || countXDiagonal1>=5 || countXDiagonal2>=5){
                 System.out.println("X Line Found!!\nOrder Wins!!");
