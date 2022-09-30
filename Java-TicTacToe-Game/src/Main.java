@@ -354,7 +354,7 @@ class RunOrderNChaos{
 }
 
 public class Main {
-    public static void playerSet(){
+    public static int getNumberPlayers(){
         int numberPlayers = 2;
         Scanner ip = new Scanner(System.in);
         System.out.print("Enter number of players : ");
@@ -366,8 +366,11 @@ public class Main {
             System.out.print("Invalid non-integer input.\nEnter number of players : ");
             numberPlayers = ip.nextInt();
         }
+        return numberPlayers;
+    }
+    public static Player[] playerSet(int numberPlayers){
+        Scanner ip = new Scanner(System.in);
         Player[] players = new Player[numberPlayers];
-        ip.nextLine();
 
         for(int i=0; i<numberPlayers;i++){
             // Player Information input
@@ -376,29 +379,24 @@ public class Main {
             players[i] = new Player(ip.nextLine(),i+1);
             System.out.println("Hello "+players[i].name+"!\n");
         }
-//        // Player 1
-//        System.out.println("Player 1:");
-//        System.out.print("Please enter your name:");
-//        player1 = new Player(ip.nextLine(),1);
-//        System.out.println("Hello "+player1.name+"!\n");
-//        // Player 2
-//        System.out.println("Player 2:");
-//        System.out.print("Please enter your name:");
-//        player2 = new Player(ip.nextLine(),2);
-//        System.out.println("Hello "+player2.name+"!\n");
+
+        return players;
     }
 
     public static void main(String[] args) {
+
         //Initialize the objects of the game
         Scanner ip = new Scanner(System.in);
         BoardTicTacToe board;
         int option = 0;
-//        board.printBoard();
+        int numberPlayers=2;
+        Player[] players;
 
         // Input for the game
         System.out.println("\nWelcome to the Java Tic-Tac-Toe game!!");
 
-        playerSet();
+        numberPlayers = getNumberPlayers();
+        players = playerSet(numberPlayers);
 
         // Game Menu
         while(true){
@@ -414,10 +412,26 @@ public class Main {
 
             switch (option){
                 case 1:
-                    board = new BoardTicTacToe(3);
+                    System.out.println("\nTic Tac Toe\nRules: \n");
+                    System.out.print("Choose Board size : ");
+                    int size=3;
+                    try{
+                        size = ip.nextInt();
+                        if (size<3 || size>1000) throw new Exception("Out of valid range");
+                    }catch(InputMismatchException e){
+                        ip.next();
+                        System.out.println("Enter valid board size.");
+                        break;
+                    }catch(Exception e){
+                        System.out.println(e.toString()+"\nEnter valid board size.");
+                        break;
+                    }
+
+                    board = new BoardTicTacToe(size);
                     RunTicTacToe.runGame(board);
                     break;
                 case 2:
+                    System.out.println("\nOrder N Chaos\nRules: \n");
                     board = new BoardTicTacToe(6);
                     RunOrderNChaos.runGame(board);
                     break;
@@ -427,9 +441,6 @@ public class Main {
                 default:
                     System.out.println("Invalid option. Try again.");
             }
-
-//            System.out.println("Rules: \n Choose Board size");
-
 
         }
 
