@@ -103,8 +103,10 @@ class BoardTicTacToe extends Board{
                     System.out.print("| "+BoardMap[(i*columns+j)].position);
                 else
                     System.out.print("| "+BoardMap[(i*columns+j)].symbol);
-                if(rows*columns>9 && (i*columns+j)<9) System.out.print("  ");
-                else System.out.print(" ");
+                if((rows*columns>9 && (i*columns+j)<9) || (rows*columns>9 && BoardMap[(i*columns+j)].symbol != '-'))
+                    System.out.print("  ");
+                else
+                    System.out.print(" ");
             }
             System.out.print("|\n");
         }
@@ -208,6 +210,7 @@ class RunTicTacToe{
         }
 
         while(gameTurn<(board.rows*board.columns)){
+            System.out.println("\nGame Turn "+(gameTurn+1));
             board.printBoard();
             if (SymbolTurn==TTTSymbol.symbolX) System.out.println("Player Turn : "+players[playerX-1].name);
             else System.out.println("Player Turn : "+players[playerO-1].name);
@@ -256,7 +259,7 @@ class RunTicTacToe{
 
 class RunOrderNChaos{
 
-    public static boolean gameCondition(BoardTicTacToe board){
+    public static boolean gameCondition(BoardTicTacToe board, Player[] players, int playerOrder,int playerChaos){
         int countXRow = 0;
         int countXColumn = 0;
         int countXDiagonal1 = 0;
@@ -322,10 +325,16 @@ class RunOrderNChaos{
             }
             if(countXRow>=5 || countXColumn>=5 || countXDiagonal1>=5 || countXDiagonal2>=5){
                 System.out.println("X Line Found!!\nOrder Wins!!");
+                players[playerOrder-1].scoreUpdate(1);
+                System.out.println("Player "+players[playerOrder-1].name+" Wins!!!");
+                System.out.println("Player "+players[playerOrder-1].name+" points : "+players[playerOrder-1].score);
                 return true;
             }
             if(countORow>=5 || countOColumn>=5 || countODiagonal1>=5 || countODiagonal2>=5){
                 System.out.println("O Line Found!!\nOrder Wins!!");
+                players[playerOrder-1].scoreUpdate(1);
+                System.out.println("Player "+players[playerOrder-1].name+" Wins!!!");
+                System.out.println("Player "+players[playerOrder-1].name+" points : "+players[playerOrder-1].score);
                 return true;
             }
         }
@@ -339,12 +348,33 @@ class RunOrderNChaos{
         int turnInput = 0;
         Scanner ip = new Scanner(System.in);
         char SymbolTurn = TTTSymbol.symbolX;
+        int playerOrder=1;
+        int playerChaos=2;
+        String playerTurn = "order";
+        boolean gameCheck = false;
+
+        System.out.println("\nWhich player wants to be Order?\nPlayers:\n1. Player "+players[0].name+"\n2. Player "+players[1].name);
+        System.out.print("\nEnter listed Player ID number : ");
+        playerOrder = ip.nextInt();
+        if(playerOrder==1) playerChaos = 2;
+        else if (playerOrder==2) playerChaos=1;
+        else{
+            System.out.println("Invalid Input. Assigning defaults to players");
+            playerOrder=1;
+            playerChaos=2;
+            System.out.println("Player 1 is Order.\nPlayer 2 is Chaos.");
+        }
 
         while(gameTurn<(board.rows*board.columns)){
+            System.out.println("\nGame Turn "+(gameTurn+1));
             board.printBoard();
             try{
+                if (playerTurn.equals("order")) System.out.println("Order Turn\nPlayer Turn : "+players[playerOrder-1].name);
+                else System.out.println("Chaos Turn\nPlayer Turn : "+players[playerChaos-1].name);
+
                 System.out.print("Choose "+TTTSymbol.symbolX+" or "+TTTSymbol.symbolO+" to mark on board : ");
                 SymbolTurn = ip.next().charAt(0);
+                SymbolTurn = Character.toUpperCase(SymbolTurn);
                 System.out.print("Enter a position on board to mark it : ");
                 turnInput = ip.nextInt();
             }catch (Exception e){
@@ -357,43 +387,57 @@ class RunOrderNChaos{
                 board.setBoard(turnInput-1, TTTSymbol.symbolX);
                 gameTurn++;
                 SymbolTurn = TTTSymbol.symbolO;
+                if (playerTurn.equals("order")) playerTurn="chaos";
+                else playerTurn="order";
             }
             else if(SymbolTurn==TTTSymbol.symbolO && turnInput>=1 && turnInput<=(board.rows*board.columns) &&
                     board.getBoardSymbol(turnInput-1)=='-'){
                 board.setBoard(turnInput-1, TTTSymbol.symbolO);
                 gameTurn++;
                 SymbolTurn = TTTSymbol.symbolX;
+                if (playerTurn.equals("order")) playerTurn="chaos";
+                else playerTurn="order";
             }
             else
                 System.out.println("Enter valid position. Try Again.");
 
-            if(RunOrderNChaos.gameCondition(board)){
+            gameCheck = RunOrderNChaos.gameCondition(board,players,playerOrder,playerChaos);
+            if(gameCheck){
                 board.printBoard();
                 System.out.println("Game Won!!");
                 break;
             }
         }
 
-        if(!gameCondition(board)){
+        if(!gameCheck){
             board.printBoard();
             System.out.println("Chaos Wins!!\nGame Over!");
+            players[playerChaos-1].scoreUpdate(1);
+            System.out.println("Player "+players[playerChaos-1].name+" Wins!!!");
+            System.out.println("Player "+players[playerChaos-1].name+" points : "+players[playerChaos-1].score);
         }
+        System.out.println("Player Scores:" +
+                "\nPlayer "+players[playerOrder-1].name+" : "+players[playerOrder-1].score
+                +"\nPlayer "+players[playerChaos-1].name+" : "+players[playerChaos-1].score
+        );
     }
 }
 
 public class Main {
     public static int getNumberPlayers(){
         int numberPlayers = 2;
-        Scanner ip = new Scanner(System.in);
-        System.out.print("Enter number of players : ");
-        try {
-            numberPlayers = ip.nextInt();
-        }catch(InputMismatchException e){
-            // Flush the input token, to ask input again
-            ip.next();
-            System.out.print("Invalid non-integer input.\nEnter number of players : ");
-            numberPlayers = ip.nextInt();
-        }
+        System.out.println("Number of Players : "+numberPlayers);
+        // Default set to 2 players
+//        Scanner ip = new Scanner(System.in);
+//        System.out.print("Enter number of players : ");
+//        try {
+//            numberPlayers = ip.nextInt();
+//        }catch(InputMismatchException e){
+//            // Flush the input token, to ask input again
+//            ip.next();
+//            System.out.print("Invalid non-integer input.\nEnter number of players : ");
+//            numberPlayers = ip.nextInt();
+//        }
         return numberPlayers;
     }
     public static Player[] playerSet(int numberPlayers){
@@ -428,7 +472,7 @@ public class Main {
 
         // Game Menu
         while(true){
-            System.out.println("\nSelect your game:\n1.Tic-Tac-Toe\n2.Order and Chaos\n3.Exit");
+            System.out.println("\nSelect your game:\n1.Tic-Tac-Toe\n2.Order and Chaos\n3.Scores\n4.Exit");
             System.out.print("Enter:");
 
             try{
@@ -464,6 +508,11 @@ public class Main {
                     RunOrderNChaos.runGame(board, numberPlayers, players);
                     break;
                 case 3:
+                    System.out.println("\nPlayer Scores:");
+                    for(int i=0;i<numberPlayers;i++)
+                        System.out.println("Player "+players[i].name+" : "+players[i].score);
+                    break;
+                case 4:
                     System.exit(0);
                     break;
                 default:
