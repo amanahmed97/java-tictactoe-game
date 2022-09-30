@@ -38,27 +38,39 @@ class Board{
 class BoardMarker{
     int position;
     char symbol;
+    String marker;
 }
 class Player{
-    String name =  new String();
+    String name;
     int team = 0;
     int score = 0;
+    String playerMarker;
 
     public Player(String name, int team){
         this.name = name;
         this.team = team;
+    }
+    public Player(String name, int team, String playerMarker){
+        this.name = name;
+        this.team = team;
+        this.playerMarker = playerMarker;
     }
 
     public int scoreUpdate(int s){
         score += s;
         return score;
     }
+    public int getScore(){
+        return score;
+    }
 }
 class GamePiece{
     char piece;
+    String pieceMark;
 
-    public void GamePiece(char gp){
+    public void GamePiece(char gp, String pm){
         piece = gp;
+        pieceMark = pm;
     }
 }
 
@@ -264,20 +276,42 @@ class RunOrderNChaos{
         int countXColumn = 0;
         int countXDiagonal1 = 0;
         int countXDiagonal2 = 0;
+        int countXDiagonal3 = 0;
+        int countXDiagonal4 = 0;
+        int countXDiagonal5 = 0;
+        int countXDiagonal6 = 0;
         int countORow = 0;
         int countOColumn = 0;
         int countODiagonal1 = 0;
         int countODiagonal2 = 0;
+        int countODiagonal3 = 0;
+        int countODiagonal4 = 0;
+        int countODiagonal5 = 0;
+        int countODiagonal6 = 0;
+        int[] diagonal3Map = {6,13,20,27,34};
+        int[] diagonal4Map = {1,8,15,22,29};
+        int[] diagonal5Map = {4,9,14,19,24};
+        int[] diagonal6Map = {11,16,21,26,31};
+
 
         for(int i=0;i<board.rows;i++){
             countXRow = 0;
             countXColumn = 0;
             countXDiagonal1 = 0;
             countXDiagonal2 = 0;
+            countXDiagonal3 = 0;
+            countXDiagonal4 = 0;
+            countXDiagonal5 = 0;
+            countXDiagonal6 = 0;
             countORow = 0;
             countOColumn = 0;
             countODiagonal1 = 0;
             countODiagonal2 = 0;
+            countODiagonal3 = 0;
+            countODiagonal4 = 0;
+            countODiagonal5 = 0;
+            countODiagonal6 = 0;
+
             for(int j=0;j<board.rows;j++) {
                 // For X check
                 // For X Row
@@ -299,6 +333,17 @@ class RunOrderNChaos{
                 if (board.getBoardSymbol((j * board.rows + (board.rows - 1 - j))) == TTTSymbol.symbolX){
                     countXDiagonal2++;
                     if (countODiagonal2 > 0) countODiagonal2--;
+                }
+                // For X Diagonal 3,4,5,6 Map
+                if (j!=5){
+                    // For X Diagonal 3
+                    if (board.getBoardSymbol(diagonal3Map[j]) == TTTSymbol.symbolX) countXDiagonal3++;
+                    // For X Diagonal 4
+                    if (board.getBoardSymbol(diagonal4Map[j]) == TTTSymbol.symbolX) countXDiagonal4++;
+                    // For X Diagonal 5
+                    if (board.getBoardSymbol(diagonal5Map[j]) == TTTSymbol.symbolX) countXDiagonal5++;
+                    // For X Diagonal 6
+                    if (board.getBoardSymbol(diagonal6Map[j]) == TTTSymbol.symbolX) countXDiagonal6++;
                 }
 
                 // For O
@@ -322,15 +367,28 @@ class RunOrderNChaos{
                     countODiagonal2++;
                     if (countXDiagonal2>0) countXDiagonal2--;
                 }
+                // For O Diagonal 3,4,5,6 Map
+                if (j!=5){
+                    // For O Diagonal 3
+                    if (board.getBoardSymbol(diagonal3Map[j]) == TTTSymbol.symbolO) countODiagonal3++;
+                    // For O Diagonal 4
+                    if (board.getBoardSymbol(diagonal4Map[j]) == TTTSymbol.symbolO) countODiagonal4++;
+                    // For O Diagonal 5
+                    if (board.getBoardSymbol(diagonal5Map[j]) == TTTSymbol.symbolO) countODiagonal5++;
+                    // For O Diagonal 6
+                    if (board.getBoardSymbol(diagonal6Map[j]) == TTTSymbol.symbolO) countODiagonal6++;
+                }
             }
-            if(countXRow>=5 || countXColumn>=5 || countXDiagonal1>=5 || countXDiagonal2>=5){
+            if(countXRow>=5 || countXColumn>=5 || countXDiagonal1>=5 || countXDiagonal2>=5 ||
+                    countXDiagonal3>=5 || countXDiagonal4>=5 || countXDiagonal5>=5 || countXDiagonal6>=5){
                 System.out.println("X Line Found!!\nOrder Wins!!");
                 players[playerOrder-1].scoreUpdate(1);
                 System.out.println("Player "+players[playerOrder-1].name+" Wins!!!");
                 System.out.println("Player "+players[playerOrder-1].name+" points : "+players[playerOrder-1].score);
                 return true;
             }
-            if(countORow>=5 || countOColumn>=5 || countODiagonal1>=5 || countODiagonal2>=5){
+            if(countORow>=5 || countOColumn>=5 || countODiagonal1>=5 || countODiagonal2>=5 ||
+                    countODiagonal3>=5 || countODiagonal4>=5 || countODiagonal5>=5 || countODiagonal6>=5){
                 System.out.println("O Line Found!!\nOrder Wins!!");
                 players[playerOrder-1].scoreUpdate(1);
                 System.out.println("Player "+players[playerOrder-1].name+" Wins!!!");
