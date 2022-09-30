@@ -26,7 +26,7 @@ Requirements:
 
 */
 // General Class
-class Board{
+abstract class Board{
     int rows;
     int columns;
 
@@ -34,8 +34,11 @@ class Board{
         rows = r;
         columns = c;
     }
+    public void printBoard(){
+        return;
+    }
 }
-class BoardMarker{
+abstract class BoardMarker{
     int position;
     char symbol;
     String marker;
@@ -73,8 +76,20 @@ class GamePiece{
         pieceMark = pm;
     }
 }
-
-// Inherit for Game Class
+interface RunGame{
+    public static boolean gameCondition() {
+        return false;
+    }
+    public static void runGame(){
+        return;
+    }
+}
+interface Score{
+    public static void printScore(){
+        return;
+    }
+}
+// Inherited from Game classes
 class TTTMarker extends BoardMarker{
     public TTTMarker(int p, char s){
         position = p;
@@ -100,7 +115,6 @@ class BoardTicTacToe extends Board{
     }
 
     public void printBoard(){
-//        int dim = 3;
 
         for(int i=0;i<rows;i++){
 
@@ -139,8 +153,39 @@ class BoardTicTacToe extends Board{
         return BoardMap[position].symbol;
     }
 }
+class PlayerTTT extends Player{
+    public PlayerTTT(String name, int team){
+        super(name,team);
+    }
+    public static int getNumberPlayers(){
+        // Default set to 2 players
+        int numberPlayers = 2;
+        System.out.println("Number of Players : "+numberPlayers);
+        return numberPlayers;
+    }
+    public static Player[] playerSet(int numberPlayers){
+        Scanner ip = new Scanner(System.in);
+        Player[] players = new Player[numberPlayers];
 
-class RunTicTacToe{
+        for(int i=0; i<numberPlayers;i++){
+            // Player Information input
+            System.out.println("Player "+(i+1)+" :");
+            System.out.print("Please enter your name:");
+            players[i] = new Player(ip.nextLine(),i+1);
+            System.out.println("Hello "+players[i].name+"!\n");
+        }
+
+        return players;
+    }
+}
+class PlayerScore implements Score{
+    public static void printScore(int numberPlayers, Player[] players) {
+        System.out.println("\nPlayer Scores:");
+        for(int i=0;i<numberPlayers;i++)
+            System.out.println("Player "+players[i].name+" : "+players[i].score);
+    }
+}
+class RunTicTacToe implements RunGame{
 
     public static boolean gameCondition(BoardTicTacToe board, Player[] players, int playerX, int playerO){
         int countXRow = 0;
@@ -211,7 +256,16 @@ class RunTicTacToe{
         int playerO=2;
         System.out.println("\nWhich player wants to be X?\nPlayers:\n1. Player "+players[0].name+"\n2. Player "+players[1].name);
         System.out.print("\nEnter listed Player ID number : ");
-        playerX = ip.nextInt();
+        try{
+            playerX = ip.nextInt();
+        }catch(Exception e){
+            System.out.println("Invalid Input. Assigning defaults to players");
+            playerX=1;
+            playerO=2;
+            System.out.println("Player 1 is X.\nPlayer 2 is O.");
+            ip.next();
+        }
+
         if(playerX==1) playerO = 2;
         else if (playerX==2) playerO=1;
         else{
@@ -262,14 +316,12 @@ class RunTicTacToe{
             board.printBoard();
             System.out.println("Stalemate!\nGame Over!");
         }
-        System.out.println("Player Scores:" +
-                "\nPlayer "+players[playerX-1].name+" : "+players[playerX-1].score
-                +"\nPlayer "+players[playerO-1].name+" : "+players[playerO-1].score
-        );
+
+        PlayerScore.printScore(numberPlayers,players);
     }
 }
 
-class RunOrderNChaos{
+class RunOrderNChaos implements RunGame{
 
     public static boolean gameCondition(BoardTicTacToe board, Player[] players, int playerOrder,int playerChaos){
         int countXRow = 0;
@@ -400,20 +452,30 @@ class RunOrderNChaos{
         return false;
     }
 
-    public static void runGame(BoardTicTacToe board, int numberPlayers, Player[] players){
+    public static void runGame(BoardTicTacToe board, int numberPlayers, Player[] players) {
         System.out.println("Starting game");
         int gameTurn = 0;
         int turnInput = 0;
         Scanner ip = new Scanner(System.in);
         char SymbolTurn = TTTSymbol.symbolX;
-        int playerOrder=1;
-        int playerChaos=2;
+        int playerOrder = 1;
+        int playerChaos = 2;
         String playerTurn = "order";
         boolean gameCheck = false;
 
-        System.out.println("\nWhich player wants to be Order?\nPlayers:\n1. Player "+players[0].name+"\n2. Player "+players[1].name);
+        System.out.println("\nWhich player wants to be Order?\nPlayers:\n1. Player " + players[0].name + "\n2. Player " + players[1].name);
         System.out.print("\nEnter listed Player ID number : ");
-        playerOrder = ip.nextInt();
+
+        try{
+            playerOrder = ip.nextInt();
+        }catch(Exception e){
+            System.out.println("Invalid Input. Assigning defaults to players");
+            playerOrder=1;
+            playerChaos=2;
+            System.out.println("Player 1 is Order.\nPlayer 2 is Chaos.");
+            ip.next();
+        }
+
         if(playerOrder==1) playerChaos = 2;
         else if (playerOrder==2) playerChaos=1;
         else{
@@ -474,45 +536,12 @@ class RunOrderNChaos{
             System.out.println("Player "+players[playerChaos-1].name+" Wins!!!");
             System.out.println("Player "+players[playerChaos-1].name+" points : "+players[playerChaos-1].score);
         }
-        System.out.println("Player Scores:" +
-                "\nPlayer "+players[playerOrder-1].name+" : "+players[playerOrder-1].score
-                +"\nPlayer "+players[playerChaos-1].name+" : "+players[playerChaos-1].score
-        );
+
+        PlayerScore.printScore(numberPlayers,players);
     }
 }
 
 public class Main {
-    public static int getNumberPlayers(){
-        int numberPlayers = 2;
-        System.out.println("Number of Players : "+numberPlayers);
-        // Default set to 2 players
-//        Scanner ip = new Scanner(System.in);
-//        System.out.print("Enter number of players : ");
-//        try {
-//            numberPlayers = ip.nextInt();
-//        }catch(InputMismatchException e){
-//            // Flush the input token, to ask input again
-//            ip.next();
-//            System.out.print("Invalid non-integer input.\nEnter number of players : ");
-//            numberPlayers = ip.nextInt();
-//        }
-        return numberPlayers;
-    }
-    public static Player[] playerSet(int numberPlayers){
-        Scanner ip = new Scanner(System.in);
-        Player[] players = new Player[numberPlayers];
-
-        for(int i=0; i<numberPlayers;i++){
-            // Player Information input
-            System.out.println("Player "+(i+1)+" :");
-            System.out.print("Please enter your name:");
-            players[i] = new Player(ip.nextLine(),i+1);
-            System.out.println("Hello "+players[i].name+"!\n");
-        }
-
-        return players;
-    }
-
     public static void main(String[] args) {
 
         //Initialize the objects of the game
@@ -523,13 +552,15 @@ public class Main {
         Player[] players;
 
         // Input for the game
-        System.out.println("\nWelcome to the Java Tic-Tac-Toe game!!");
+        System.out.print("\nWelcome to the Java Tic-Tac-Toe game!!!");
+        System.out.println("\n=======================================\n");
 
-        numberPlayers = getNumberPlayers();
-        players = playerSet(numberPlayers);
+        numberPlayers = PlayerTTT.getNumberPlayers();
+        players = PlayerTTT.playerSet(numberPlayers);
 
         // Game Menu
         while(true){
+            System.out.println("\n=======================================\n");
             System.out.println("\nSelect your game:\n1.Tic-Tac-Toe\n2.Order and Chaos\n3.Scores\n4.Exit");
             System.out.print("Enter:");
 
@@ -542,6 +573,7 @@ public class Main {
 
             switch (option){
                 case 1:
+                    System.out.println("\n=======================================\n");
                     System.out.println("\nTic Tac Toe\nRules: \n");
                     System.out.print("Choose Board size : ");
                     int size=3;
@@ -561,16 +593,18 @@ public class Main {
                     RunTicTacToe.runGame(board, numberPlayers, players);
                     break;
                 case 2:
+                    System.out.println("\n=======================================\n");
                     System.out.println("\nOrder N Chaos\nRules: \n");
                     board = new BoardTicTacToe(6);
                     RunOrderNChaos.runGame(board, numberPlayers, players);
                     break;
                 case 3:
-                    System.out.println("\nPlayer Scores:");
-                    for(int i=0;i<numberPlayers;i++)
-                        System.out.println("Player "+players[i].name+" : "+players[i].score);
+                    System.out.println("\n=======================================\n");
+                    PlayerScore.printScore(numberPlayers,players);
                     break;
                 case 4:
+                    System.out.println("\n=======================================\n");
+                    System.out.println("Thank You for playing!!\nSee you soon!");
                     System.exit(0);
                     break;
                 default:
