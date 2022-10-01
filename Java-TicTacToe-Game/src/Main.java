@@ -7,24 +7,21 @@ Goal: Make an OO & extensible Java game.
 
 Class and Object Design for Game:
     1. Board
-    2. Player
-    3. Each matrix pod having object
-    4. Turn based
-    5. Actions/Ruleset
+    2. BoardMarker
+    3. Player
+    4. GamePiece
+    5. RunGame
+    6. Score
+    7. Turn based
+    8. Actions/Ruleset
 
 Requirements:
-    Interactive, Display, Turn Based, Active memory store.
-    Ask player name, board numbered, maintain score and sin conditions.
+    Interactive, Display, Turn Based, memory store.
+    Ask player name, board numbered, maintain score and win conditions.
     Maintain coding standards and OO Design.
     Inheritance, Encapsulation.
-
-    S - Single-responsiblity Principle
-    O - Open-closed Principle
-    L - Liskov Substitution Principle
-    I - Interface Segregation Principle
-    D - Dependency Inversion Principle
-
 */
+
 // General Class
 abstract class Board{
     int rows;
@@ -89,6 +86,14 @@ interface Score{
         return;
     }
 }
+abstract class Rules{
+    String ruleset;
+
+    public static void printRules(){
+        return;
+    }
+}
+
 // Inherited from Game classes
 class TTTMarker extends BoardMarker{
     public TTTMarker(int p, char s){
@@ -103,6 +108,29 @@ class TTTMarker extends BoardMarker{
 class TTTSymbol extends GamePiece{
     static final char symbolX = 'X';
     static final char symbolO = 'O';
+}
+class RulesTicTacToe extends Rules{
+    public static void printRules() {
+        System.out.println("Rules:\n" +
+                "1. Board size ranges from 3 to 1000\n" +
+                "2. Player to choose to play as X or O\n" +
+                "3. Game turns will alternate for players\n" +
+                "4. Enter position to place marker on board" +
+                "5. To win get a row, column or diagonal, full of only Xs or only Os\n");
+    }
+}
+class RulesOrderNChaos extends Rules{
+    public static void printRules() {
+        System.out.println("Rules:\n" +
+                "1. Board size is 6x6\n" +
+                "2. Player to choose to play as Order or Chaos\n" +
+                "3. Game turns will alternate for players\n" +
+                "4. Both players Order and Chaos can choose X or O in each turn\n" +
+                "5. Enter position to place marker on board\n" +
+                "6. The player Order wins by creating a 5-in-a-row of either Xs or Os.\n" +
+                "7. The opponent Chaos endeavors to prevent this and aims to fill the board without completion" +
+                "of a line of 5 like pieces.\n");
+    }
 }
 class BoardTicTacToe extends Board{
     TTTMarker[] BoardMap;
@@ -583,7 +611,8 @@ public class Main {
             switch (option){
                 case 1:
                     System.out.println("\n=======================================\n");
-                    System.out.println("\nTic Tac Toe\nRules: \n");
+                    System.out.println("\nTic Tac Toe");
+                    RulesTicTacToe.printRules();
                     System.out.print("Choose Board size : ");
                     int size=3;
                     try{
@@ -603,7 +632,8 @@ public class Main {
                     break;
                 case 2:
                     System.out.println("\n=======================================\n");
-                    System.out.println("\nOrder N Chaos\nRules: \n");
+                    System.out.println("\nOrder N Chaos\n");
+                    RulesOrderNChaos.printRules();
                     board = new BoardTicTacToe(6);
                     RunOrderNChaos.runGame(board, numberPlayers, players);
                     break;
