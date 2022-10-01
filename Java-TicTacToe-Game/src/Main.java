@@ -188,6 +188,7 @@ class PlayerScore implements Score{
 class RunTicTacToe implements RunGame{
 
     public static boolean gameCondition(BoardTicTacToe board, Player[] players, int playerX, int playerO){
+        // Setting the counters for X and O to check across rows, column, diagonals
         int countXRow = 0;
         int countXColumn = 0;
         int countXDiagonal1 = 0;
@@ -226,6 +227,7 @@ class RunTicTacToe implements RunGame{
                 if(board.getBoardSymbol((j*board.rows+(board.rows-1-j))) == TTTSymbol.symbolO)
                     countODiagonal2++;
             }
+            // Check if any of the counters have reached required sum for win
             if(countXRow==board.rows || countXColumn==board.rows || countXDiagonal1==board.rows || countXDiagonal2==board.rows){
                 System.out.println("X Wins!!");
                 players[playerX-1].scoreUpdate(1);
@@ -247,6 +249,7 @@ class RunTicTacToe implements RunGame{
 
     public static void runGame(BoardTicTacToe board, int numberPlayers, Player[] players){
         System.out.println("Starting game");
+        // Setting up game variables
         int gameTurn = 0;
         int turnInput = 0;
         boolean gameCheck = false;
@@ -254,6 +257,7 @@ class RunTicTacToe implements RunGame{
         char SymbolTurn = TTTSymbol.symbolX;
         int playerX=1;
         int playerO=2;
+        // Handling user inputs
         System.out.println("\nWhich player wants to be X?\nPlayers:\n1. Player "+players[0].name+"\n2. Player "+players[1].name);
         System.out.print("\nEnter listed Player ID number : ");
         try{
@@ -278,6 +282,7 @@ class RunTicTacToe implements RunGame{
         while(gameTurn<(board.rows*board.columns)){
             System.out.println("\nGame Turn "+(gameTurn+1));
             board.printBoard();
+            // User playing inputs
             if (SymbolTurn==TTTSymbol.symbolX) System.out.println("Player Turn : "+players[playerX-1].name);
             else System.out.println("Player Turn : "+players[playerO-1].name);
             System.out.print("Enter a position on board to mark "+SymbolTurn+" : ");
@@ -288,7 +293,7 @@ class RunTicTacToe implements RunGame{
                 // Flush the input token, to ask input again
                 ip.next();
             }
-
+            // Update the board and game based on user input
             if(SymbolTurn==TTTSymbol.symbolX && turnInput>=1 && turnInput<=(board.rows*board.columns) &&
                     board.getBoardSymbol(turnInput-1)=='-'){
                 board.setBoard(turnInput-1, TTTSymbol.symbolX);
@@ -303,7 +308,7 @@ class RunTicTacToe implements RunGame{
             }
             else
                 System.out.println("Enter valid position. Try Again.");
-
+            // Check game state for any win conditions
             gameCheck = gameCondition(board,players,playerX,playerO);
             if(gameCheck){
                 board.printBoard();
@@ -324,6 +329,7 @@ class RunTicTacToe implements RunGame{
 class RunOrderNChaos implements RunGame{
 
     public static boolean gameCondition(BoardTicTacToe board, Player[] players, int playerOrder,int playerChaos){
+        // Setting the counters for X and O to check across rows, column, diagonals
         int countXRow = 0;
         int countXColumn = 0;
         int countXDiagonal1 = 0;
@@ -431,6 +437,7 @@ class RunOrderNChaos implements RunGame{
                     if (board.getBoardSymbol(diagonal6Map[j]) == TTTSymbol.symbolO) countODiagonal6++;
                 }
             }
+            // Check if any of the counters have reached total of 5 in a row
             if(countXRow>=5 || countXColumn>=5 || countXDiagonal1>=5 || countXDiagonal2>=5 ||
                     countXDiagonal3>=5 || countXDiagonal4>=5 || countXDiagonal5>=5 || countXDiagonal6>=5){
                 System.out.println("X Line Found!!\nOrder Wins!!");
@@ -454,6 +461,7 @@ class RunOrderNChaos implements RunGame{
 
     public static void runGame(BoardTicTacToe board, int numberPlayers, Player[] players) {
         System.out.println("Starting game");
+        // Setting up game variables
         int gameTurn = 0;
         int turnInput = 0;
         Scanner ip = new Scanner(System.in);
@@ -462,7 +470,7 @@ class RunOrderNChaos implements RunGame{
         int playerChaos = 2;
         String playerTurn = "order";
         boolean gameCheck = false;
-
+        // Handling user inputs
         System.out.println("\nWhich player wants to be Order?\nPlayers:\n1. Player " + players[0].name + "\n2. Player " + players[1].name);
         System.out.print("\nEnter listed Player ID number : ");
 
@@ -488,6 +496,7 @@ class RunOrderNChaos implements RunGame{
         while(gameTurn<(board.rows*board.columns)){
             System.out.println("\nGame Turn "+(gameTurn+1));
             board.printBoard();
+            // User playing inputs
             try{
                 if (playerTurn.equals("order")) System.out.println("Order Turn\nPlayer Turn : "+players[playerOrder-1].name);
                 else System.out.println("Chaos Turn\nPlayer Turn : "+players[playerChaos-1].name);
@@ -501,7 +510,7 @@ class RunOrderNChaos implements RunGame{
                 // Flush the input token, to ask input again
                 ip.next();
             }
-
+            // Update the board and game based on user input
             if(SymbolTurn==TTTSymbol.symbolX && turnInput>=1 && turnInput<=(board.rows*board.columns) &&
                     board.getBoardSymbol(turnInput-1)=='-'){
                 board.setBoard(turnInput-1, TTTSymbol.symbolX);
@@ -520,7 +529,7 @@ class RunOrderNChaos implements RunGame{
             }
             else
                 System.out.println("Enter valid position. Try Again.");
-
+            // Check game state for any win conditions
             gameCheck = RunOrderNChaos.gameCondition(board,players,playerOrder,playerChaos);
             if(gameCheck){
                 board.printBoard();
