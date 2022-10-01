@@ -369,22 +369,22 @@ class RunOrderNChaos implements RunGame{
                 // For X Row
                 if (board.getBoardSymbol(i * board.rows + j) == TTTSymbol.symbolX) {
                     countXRow++;
-                    if (countORow > 0) countORow--;
+                    if (countORow>0 && countORow!=5) countORow--;
                 }
                 // For X Column
                 if (board.getBoardSymbol(j * board.rows + i) == TTTSymbol.symbolX) {
                     countXColumn++;
-                    if (countOColumn > 0) countOColumn--;
+                    if (countOColumn>0  && countOColumn!=5) countOColumn--;
                 }
                 // For X Diagonal 1
                 if (board.getBoardSymbol(j * board.rows + j) == TTTSymbol.symbolX) {
                     countXDiagonal1++;
-                    if (countODiagonal1 > 0) countODiagonal1--;
+                    if (countODiagonal1>0 && countODiagonal1!=5) countODiagonal1--;
                 }
                 // For X Diagonal 2
                 if (board.getBoardSymbol((j * board.rows + (board.rows - 1 - j))) == TTTSymbol.symbolX){
                     countXDiagonal2++;
-                    if (countODiagonal2 > 0) countODiagonal2--;
+                    if (countODiagonal2>0 && countODiagonal2!=5) countODiagonal2--;
                 }
                 // For X Diagonal 3,4,5,6 Map
                 if (j!=5){
@@ -402,22 +402,22 @@ class RunOrderNChaos implements RunGame{
                 // For O Row
                 if(board.getBoardSymbol(i*board.rows+j) == TTTSymbol.symbolO){
                     countORow++;
-                    if (countXRow>0) countXRow--;
+                    if (countXRow>0 && countXRow!=5) countXRow--;
                 }
                 // For O Column
                 if(board.getBoardSymbol(j*board.rows+i) == TTTSymbol.symbolO) {
                     countOColumn++;
-                    if (countXColumn>0) countXColumn--;
+                    if (countXColumn>0 && countXColumn!=5) countXColumn--;
                 }
                 // For O Diagonal 1
                 if(board.getBoardSymbol(j*board.rows+j) == TTTSymbol.symbolO) {
                     countODiagonal1++;
-                    if (countXDiagonal1>0) countXDiagonal1--;
+                    if (countXDiagonal1>0 && countXDiagonal1!=5) countXDiagonal1--;
                 }
                 // For O Diagonal 2
                 if(board.getBoardSymbol((j*board.rows+(board.rows-1-j))) == TTTSymbol.symbolO) {
                     countODiagonal2++;
-                    if (countXDiagonal2>0) countXDiagonal2--;
+                    if (countXDiagonal2>0 && countXDiagonal2!=5) countXDiagonal2--;
                 }
                 // For O Diagonal 3,4,5,6 Map
                 if (j!=5){
